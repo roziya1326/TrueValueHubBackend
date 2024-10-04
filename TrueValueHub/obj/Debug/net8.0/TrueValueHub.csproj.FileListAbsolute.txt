@@ -134,3 +134,5 @@ C:\Users\rosiya.paulson\source\repos\True_Value_Hub\TrueValueHub\obj\Debug\net8.
 C:\Users\rosiya.paulson\source\repos\True_Value_Hub\TrueValueHub\obj\Debug\net8.0\TrueValueHub.pdb
 C:\Users\rosiya.paulson\source\repos\True_Value_Hub\TrueValueHub\obj\Debug\net8.0\TrueValueHub.genruntimeconfig.cache
 C:\Users\rosiya.paulson\source\repos\True_Value_Hub\TrueValueHub\obj\Debug\net8.0\ref\TrueValueHub.dll
+C:\Users\rosiya.paulson\source\repos\True_Value_Hub\TrueValueHub\obj\Debug\net8.0\TrueValueHub.sourcelink.json
+C:\Users\rosiya.paulson\source\repos\True_Value_Hub\TrueValueHub\bin\Debug\net8.0\AutoMapper.dll

@@ -4,6 +4,7 @@ using System.Text.Json.Serialization;
 using TrueValueHub.Data;
 using TrueValueHub.Interfaces;
 using TrueValueHub.Repositories;
+using TrueValueHub.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -23,6 +24,7 @@ builder.Services.AddDbContext<ApiDbContext>(options =>
 builder.Services.AddScoped<IPartRepository, PartRepository>();
 builder.Services.AddScoped<IMaterialRepository, MaterialRepository>();
 builder.Services.AddScoped<IProjectRepository, ProjectRepository>();
+builder.Services.AddScoped<IPartService, PartService>();
 builder.Services.AddControllers()
     .AddJsonOptions(options =>
     {
@@ -33,6 +35,7 @@ builder.Services.AddControllers()
     {
         options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
     });
+builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 
 var app = builder.Build();
 

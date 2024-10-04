@@ -10,17 +10,19 @@ namespace TrueValueHub.Controllers
     {
         private readonly IPartRepository _partRepository;
         private readonly IMaterialRepository _materialRepository;
+        private readonly IPartService _partService;
 
-        public PartController(IPartRepository partRepository, IMaterialRepository materialRepository)
+        public PartController(IPartRepository partRepository, IMaterialRepository materialRepository, IPartService partService)
         {
             _partRepository = partRepository;
             _materialRepository = materialRepository;
+            _partService = partService;
         }
 
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Part>>> GetParts()
         {
-            var parts = await _partRepository.GetAllParts();
+            var parts = await _partService.GetAllParts();
             return Ok(parts);
         }
 
