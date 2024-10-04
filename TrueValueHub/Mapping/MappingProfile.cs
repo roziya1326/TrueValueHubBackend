@@ -11,7 +11,10 @@ namespace TrueValueHub.Mapping
                 .ForMember(dest => dest.InternalPartNumber, opt => opt.Ignore())
                 .ForMember(dest => dest.PartId, opt => opt.Ignore())
                 .ForMember(dest => dest.ProjectId, opt => opt.Ignore());
-                
+            CreateMap<Material, Material>()
+                .ForMember(dest => dest.MaterialId, opt => opt.Ignore());
+
+
         }
     }
 }

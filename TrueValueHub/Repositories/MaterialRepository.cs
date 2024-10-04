@@ -1,101 +1,105 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using AutoMapper;
+using Microsoft.EntityFrameworkCore;
 using TrueValueHub.Data;
 using TrueValueHub.Interfaces;
 using TrueValueHub.Models;
 
 namespace TrueValueHub.Repositories
 {
-    public class MaterialRepository:IMaterialRepository
+    public class MaterialRepository : IMaterialRepository
     {
         private readonly ApiDbContext _context;
         private readonly IPartRepository _partRepository;
+        private readonly IMapper _mapper;
 
-        public MaterialRepository(ApiDbContext context, IPartRepository partRepository)
+        public MaterialRepository(ApiDbContext context, IPartRepository partRepository, IMapper mapper)
         {
             _context = context;
             _partRepository = partRepository;
+            _mapper = mapper;
         }
 
         public async Task<Material> GetMaterialById(int materialId)
         {
-            return await _context.Set<Material>().FindAsync(materialId);
-        }
-        public async Task<bool> UpdateMaterial(Material material, int materialId)
-        {
-            if (materialId != material.MaterialId)
-            {
-                return false; 
-            }
-
-            var existingMaterial = await _context.Materials.FirstOrDefaultAsync(m => m.MaterialId == materialId);
-            if (existingMaterial == null)
-            {
-                Console.WriteLine("No material found with the given materialId.");
-                return false; 
-            }
-
-            existingMaterial.MaterialDescription = material.MaterialDescription;
-            existingMaterial.Cost = material.Cost;
-            existingMaterial.ProcessGroup = material.ProcessGroup;
-            existingMaterial.SubProcess = material.SubProcess;
-            existingMaterial.MaterialCategory = material.MaterialCategory;
-            existingMaterial.Family = material.Family;
-            existingMaterial.Grade = material.Grade;
-            existingMaterial.Volume = material.Volume;
-            existingMaterial.Price = material.Price;
-            existingMaterial.Density = material.Density;
-            existingMaterial.MoldBoxLength = material.MoldBoxLength;
-            existingMaterial.MoldBoxWidth = material.MoldBoxWidth;
-            existingMaterial.MoldBoxHeight = material.MoldBoxHeight;
-            existingMaterial.MoldSandWeight = material.MoldSandWeight;
-            existingMaterial.MSWR = material.MSWR;
-            existingMaterial.NetMaterialCost = material.NetMaterialCost;
-            existingMaterial.TotalMaterialCost = material.TotalMaterialCost;
-            existingMaterial.PartId = material.PartId; 
-
             try
             {
-                await _context.SaveChangesAsync();
-                return true; 
+                return await _context.Set<Material>().FindAsync(materialId);
             }
-            catch (DbUpdateException ex)
+            catch (Exception ex)
             {
-                return false;
+                throw new Exception("An error occurred while fetching the material.", ex);
+            }
+        }
+
+        public async Task<bool> UpdateMaterial(Material material, int materialId)
+        {
+            try
+            {
+                var existingMaterial = await _context.Materials.FirstOrDefaultAsync(m => m.MaterialId == materialId);
+
+                if (existingMaterial == null)
+                {
+                    return false; 
+                }
+
+                _mapper.Map(material, existingMaterial);
+
+                await _context.SaveChangesAsync();
+                return true;
+            }
+            catch (DbUpdateException dbEx)
+            {
+                throw new Exception("A database error occurred while updating the material.", dbEx);
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("An unexpected error occurred in the repository while updating the material.", ex);
             }
         }
 
         public async Task<bool> DeleteMaterial(int materialId)
         {
-            var material = await _context.Materials.FindAsync(materialId);
-            if (material == null)
-            {
-                return false;
-            }
-
-            _context.Materials.Remove(material);
-            await _context.SaveChangesAsync(); 
-
-            return true; 
-        }
-        public async Task<bool> AddMaterialUsingPartId(int partId, Material newMaterial)
-        {
-            var part = await _partRepository.GetPartById(partId);
-            if (part == null)
-            {
-                return false;
-
-            }
             try
             {
+                var material = await _context.Materials.FindAsync(materialId);
+                if (material == null)
+                {
+                    return false;
+                }
+
+                _context.Materials.Remove(material);
+                await _context.SaveChangesAsync();
+                return true;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("An error occurred while deleting the material.", ex);
+            }
+        }
+
+        public async Task<bool> AddMaterialUsingPartId(int partId, Material newMaterial)
+        {
+            try
+            {
+                var part = await _partRepository.GetPartById(partId);
+                if (part == null)
+                {
+                    return false;
+                }
+
                 await _context.Materials.AddAsync(newMaterial);
                 await _context.SaveChangesAsync();
                 return true;
             }
-            catch (DbUpdateException ex)
+            catch (DbUpdateException dbEx)
             {
-                return false;
+                throw new Exception("A database error occurred while adding the material.", dbEx);
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("An unexpected error occurred while adding the material.", ex);
             }
         }
-
     }
+
 }
