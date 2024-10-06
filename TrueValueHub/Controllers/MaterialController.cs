@@ -5,51 +5,70 @@ using TrueValueHub.Repositories;
 
 namespace TrueValueHub.Controllers
 {
-    [Route("api/[controller]")]
     [ApiController]
+    [Route("api/[controller]")]
+
     public class MaterialController : ControllerBase
     {
-        private readonly IMaterialRepository _materialRepository;
+        private readonly IMaterialService _materialService;
 
-        public MaterialController(IMaterialRepository materialRepository)
+        public MaterialController(IMaterialService materialService)
         {
-            _materialRepository = materialRepository;
+            _materialService = materialService;
         }
-        [HttpPut("{materialId}")]
-        public async Task<IActionResult> PutMaterial(int materialId, Material material)
-        {
-            Console.WriteLine($"Route materialId: {materialId}, Body MaterialId: {material.MaterialId}");
 
-            var isUpdated = await _materialRepository.UpdateMaterial(material, materialId);
-            if (isUpdated)
-            {
-                return Ok("Material updated successfully");
-            }
-            return BadRequest();
-        }
-        [HttpDelete("{materialId}")]
-        public async Task<IActionResult> DeleteMaterial(int materialId)
-        {
-            Console.WriteLine($"Deleting material with ID: {materialId}");
-
-            var isDeleted = await _materialRepository.DeleteMaterial(materialId);
-            if (isDeleted)
-            {
-                return Ok("Material deleted successfully");
-            }
-            return NotFound("Material not found");
-        }
         [HttpGet("{materialId}")]
         public async Task<IActionResult> GetMaterialById(int materialId)
         {
-            Console.WriteLine($"Fetching material with ID: {materialId}");
-
-            var material = await _materialRepository.GetMaterialById(materialId);
-            if (material == null)
+            try
             {
-                return NotFound("Material not found");
+                var material = await _materialService.GetMaterialById(materialId);
+                if (material == null)
+                {
+                    return NotFound("Material not found.");
+                }
+                return Ok(material);
             }
-            return Ok(material);
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"Internal server error: {ex.Message}");
+            }
+        }
+
+        [HttpPut("{materialId}")]
+        public async Task<IActionResult> PutMaterial(int materialId, [FromBody] Material material)
+        {
+            try
+            {
+                var isUpdated = await _materialService.UpdateMaterial(material, materialId);
+                if (isUpdated)
+                {
+                    return Ok("Material updated successfully.");
+                }
+                return BadRequest("Failed to update material.");
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"Internal server error: {ex.Message}");
+            }
+        }
+
+        [HttpDelete("{materialId}")]
+        public async Task<IActionResult> DeleteMaterial(int materialId)
+        {
+            try
+            {
+                var isDeleted = await _materialService.DeleteMaterial(materialId);
+                if (isDeleted)
+                {
+                    return Ok("Material deleted successfully.");
+                }
+                return NotFound("Material not found.");
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"Internal server error: {ex.Message}");
+            }
         }
 
         [HttpPost("{partId}")]
@@ -60,16 +79,20 @@ namespace TrueValueHub.Controllers
                 return BadRequest("Material cannot be null.");
             }
 
-            var isAdded = await _materialRepository.AddMaterialUsingPartId(partId, newMaterial);
-
-            if (isAdded == true)
+            try
             {
-                return Ok(newMaterial);
+                var isAdded = await _materialService.AddMaterialUsingPartId(partId, newMaterial);
+                if (isAdded)
+                {
+                    return Ok(newMaterial);
+                }
+                return NotFound("Part not found or material could not be added.");
             }
-
-            return NotFound("Part not found or material could not be added.");
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"Internal server error: {ex.Message}");
+            }
         }
-
-
     }
+
 }

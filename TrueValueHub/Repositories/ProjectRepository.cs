@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using TrueValueHub.Models;
 using TrueValueHub.Data;
+using TrueValueHub.Dto;
 
 namespace TrueValueHub.Repositories
 {
@@ -26,13 +27,6 @@ namespace TrueValueHub.Repositories
                                           .FirstOrDefaultAsync(p => p.ProjectId == id);
         }
 
-        public async Task<Project> AddProjectAsync(Project project)
-        {
-            _context.Projects.Add(project);
-            await _context.SaveChangesAsync();
-            return project;
-        }
-
         public async Task<Project> UpdateProjectAsync(Project project)
         {
             _context.Entry(project).State = EntityState.Modified;
@@ -52,9 +46,9 @@ namespace TrueValueHub.Repositories
         }
         public async Task<Project> AddProject(Project project)
         {
-            await _context.Projects.AddAsync(project);
+            var newproject = await _context.Projects.AddAsync(project);
             await _context.SaveChangesAsync();
-            return project;
+            return newproject.Entity;
         }
 
         public async Task UpdateProjectPartsAsync(Project project)
