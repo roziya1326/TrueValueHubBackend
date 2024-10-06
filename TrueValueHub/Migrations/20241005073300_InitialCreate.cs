@@ -16,7 +16,8 @@ namespace TrueValueHub.Migrations
                 {
                     ProjectId = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    ProjectName = table.Column<string>(type: "nvarchar(200)", maxLength: 200, nullable: false)
+                    ProjectName = table.Column<string>(type: "nvarchar(200)", maxLength: 200, nullable: false),
+                    Description = table.Column<string>(type: "nvarchar(200)", maxLength: 200, nullable: false)
                 },
                 constraints: table =>
                 {
@@ -44,8 +45,9 @@ namespace TrueValueHub.Migrations
                     PaymentTerms = table.Column<string>(type: "nvarchar(20)", maxLength: 20, nullable: false),
                     LifetimeQuantityRemaining = table.Column<int>(type: "int", nullable: false),
                     ProjectId = table.Column<int>(type: "int", nullable: false),
-                    ParentId = table.Column<int>(type: "int", nullable: true),
-                    ParentPartPartId = table.Column<int>(type: "int", nullable: true)
+                    ParentId = table.Column<int>(type: "int", nullable: false),
+                    ParentPartPartId = table.Column<int>(type: "int", nullable: true),
+                    PartComplexity = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {

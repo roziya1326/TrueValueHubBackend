@@ -26,6 +26,7 @@ builder.Services.AddScoped<IMaterialRepository, MaterialRepository>();
 builder.Services.AddScoped<IProjectRepository, ProjectRepository>();
 builder.Services.AddScoped<IPartService, PartService>();
 builder.Services.AddScoped<IMaterialService, MaterialService>();
+builder.Services.AddScoped<IProjectService, ProjectService>();
 builder.Services.AddControllers()
     .AddJsonOptions(options =>
     {

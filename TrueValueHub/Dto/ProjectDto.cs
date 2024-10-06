@@ -1,4 +1,6 @@
-﻿namespace TrueValueHub.Dto
+﻿using TrueValueHub.Models;
+
+namespace TrueValueHub.Dto
 {
     public class ProjectDto
     {
@@ -6,6 +8,6 @@
         public string ProjectName { get; set; }
         public string Description { get; set; }
 
-        public List<PartDto> Parts { get; set; } 
+        public List<Part> Parts { get; set; } 
     }
 }

@@ -4,6 +4,7 @@ using TrueValueHub.Interfaces;
 using TrueValueHub.Models;
 using Microsoft.EntityFrameworkCore;
 using AutoMapper;
+using TrueValueHub.Dto;
 
 
 namespace TrueValueHub.Repositories
@@ -28,10 +29,29 @@ namespace TrueValueHub.Repositories
             {
                 try
                 {
-                    return await _context.Parts.Include(p => p.Materials)
-                        .Where(p => p.InternalPartNumber.Contains(id))
-                        .ToListAsync();
-                }
+                return await _context.Parts.Where(p => p.InternalPartNumber.Contains(id))
+                     .Select(p => new Part
+                     {
+                         PartId = p.PartId,
+                         InternalPartNumber = p.InternalPartNumber,
+                         SupplierName = p.SupplierName,
+                         DeliverySiteName = p.DeliverySiteName,
+                         DrawingNumber = p.DrawingNumber,
+                         IncoTerms = p.IncoTerms,
+                         AnnualVolume = p.AnnualVolume,
+                         BomQty = p.BomQty,
+                         DeliveryFrequency = p.DeliveryFrequency,
+                         LotSize = p.LotSize,
+                         ManufacturingCategory = p.ManufacturingCategory,
+                         PackagingType = p.PackagingType,
+                         ProductLifeRemaining = p.ProductLifeRemaining,
+                         PaymentTerms = p.PaymentTerms,
+                         LifetimeQuantityRemaining = p.LifetimeQuantityRemaining,
+                         ProjectId = p.ProjectId,
+                         Materials = p.Materials
+                     })
+                     .ToListAsync();
+            }
                 catch (DbUpdateException dbEx)
                 {
                     throw new Exception("A database error occurred while retrieving parts.", dbEx);

@@ -17,6 +17,19 @@ namespace TrueValueHub.Data
             base.OnModelCreating(modelBuilder);
 
             modelBuilder.Entity<Part>()
+            .HasKey(p => p.PartId); // Assuming PartId is the primary key
+
+            modelBuilder.Entity<Project>()
+                .HasKey(pr => pr.ProjectId); // Assuming ProjectId is the primary key
+
+            // Configuring the relationship
+            modelBuilder.Entity<Part>()
+                .HasOne<Project>() // Assuming you have a navigation property for Project
+                .WithMany() // Assuming a Project can have many Parts
+                .HasForeignKey(p => p.ProjectId) // Foreign key in Parts table
+                .OnDelete(DeleteBehavior.Cascade);
+
+            modelBuilder.Entity<Part>()
                 .HasMany(p => p.Materials)
                 .WithOne(m => m.Part)
                 .HasForeignKey(m => m.PartId);

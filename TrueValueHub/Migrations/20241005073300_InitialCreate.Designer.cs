@@ -12,8 +12,8 @@ using TrueValueHub.Data;
 namespace TrueValueHub.Migrations
 {
     [DbContext(typeof(ApiDbContext))]
-    [Migration("20241004070859_descriptionadded")]
-    partial class descriptionadded
+    [Migration("20241005073300_InitialCreate")]
+    partial class InitialCreate
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
