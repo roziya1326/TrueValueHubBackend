@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Mvc;
+using TrueValueHub.Dto;
 using TrueValueHub.Interfaces;
 using TrueValueHub.Models;
 
@@ -8,14 +9,10 @@ namespace TrueValueHub.Controllers
     [ApiController]
     public class PartController : ControllerBase
     {
-        private readonly IPartRepository _partRepository;
-        private readonly IMaterialRepository _materialRepository;
         private readonly IPartService _partService;
 
-        public PartController(IPartRepository partRepository, IMaterialRepository materialRepository, IPartService partService)
+        public PartController(IPartService partService)
         {
-            _partRepository = partRepository;
-            _materialRepository = materialRepository;
             _partService = partService;
         }
 
@@ -29,7 +26,7 @@ namespace TrueValueHub.Controllers
         [HttpGet("{id}")]
         public async Task<ActionResult<Part>> GetPart(string id)
         {
-            var part = await _partRepository.GetPartByInternalPartNo(id);
+            var part = await _partService.GetPartByInternalPartNo(id);
 
             if (part == null)
             {
@@ -42,7 +39,7 @@ namespace TrueValueHub.Controllers
         [HttpPost]
         public async Task<ActionResult<Part>> PostPart(Part part)
         {
-            await _partRepository.AddPart(part);
+            await _partService.AddPart(part);
             return CreatedAtAction(nameof(GetPart), new { id = part.PartId }, part);
         }
 
@@ -52,7 +49,7 @@ namespace TrueValueHub.Controllers
             Console.WriteLine($"Route internalPartNumber: {internalPartNumber}, Body internalPartNumber: {part.InternalPartNumber}");
 
 
-            var isUpdated = await _partRepository.UpdatePart(part,internalPartNumber);
+            var isUpdated = await _partService.UpdatePart(part,internalPartNumber);
             if (isUpdated == true)
             {
                 return Ok(" parts Updated Successfully");
