@@ -9,6 +9,8 @@ namespace TrueValueHub.Repositories
     {
         Task<IEnumerable<Project>> GetProjectsAsync();
         Task<Project> GetProjectByIdAsync(int id);
+        Task<List<Project>> GetProjectByName(string name);
+
         Task<Project> UpdateProjectAsync(Project project);
         Task<bool> DeleteProjectAsync(int id);
         Task<Project> AddProject(Project project);

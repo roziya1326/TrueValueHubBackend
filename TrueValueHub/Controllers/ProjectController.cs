@@ -6,6 +6,7 @@ using TrueValueHub.Dto;
 using TrueValueHub.Interfaces;
 using TrueValueHub.Models;
 using TrueValueHub.Repositories;
+using TrueValueHub.Services;
 
 namespace TrueValueHub.Controllers
 {
@@ -37,7 +38,18 @@ namespace TrueValueHub.Controllers
 
             return Ok(project);
         }
+        [HttpGet("name/{name}")]
+        public async Task<ActionResult<Project>> GetProject(string name)
+        {
+            var project = await _projectService.GetProjectByName(name);
 
+            if (project == null)
+            {
+                return NotFound();
+            }
+
+            return Ok(project);
+        }
         [HttpPut("{id}")]
         public async Task<IActionResult> PutProject(int id, Project project)
         {

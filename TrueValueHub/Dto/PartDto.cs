@@ -1,4 +1,6 @@
-﻿namespace TrueValueHub.Dto
+﻿using TrueValueHub.Models;
+
+namespace TrueValueHub.Dto
 {
     public class PartDto
     {
@@ -18,7 +20,6 @@
         public string PaymentTerms { get; set; }
         public int LifetimeQuantityRemaining { get; set; }
         public int ProjectId { get; set; }
-
         public int ParentId { get; set; }
         public List<PartDto> ChildParts { get; set; } = new List<PartDto>();
     }
