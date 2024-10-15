@@ -22,11 +22,30 @@ namespace TrueValueHub.Services
             {
                 return await _projectRepository.GetProjectsAsync();
             }
+            public async Task<List<Project>> GetProjectByName(string name)
+            {
+            try
+            {
+                var projects = await _projectRepository.GetProjectByName(name);
+                if (projects == null || !projects.Any())
+                {
+                    throw new KeyNotFoundException("No projects found with the given internal part number.");
+                }
+                return projects;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("An error occurred while fetching the projecr in the service.", ex);
+            }
 
-            public async Task<Project> GetProjectByIdAsync(int id)
+        }
+
+
+        public async Task<Project> GetProjectByIdAsync(int id)
             {
                 return await _projectRepository.GetProjectByIdAsync(id);
             }
+            
 
             public async Task<Project> UpdateProjectAsync(Project project)
             {

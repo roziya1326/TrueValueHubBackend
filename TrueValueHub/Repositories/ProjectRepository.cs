@@ -18,13 +18,22 @@ namespace TrueValueHub.Repositories
 
         public async Task<IEnumerable<Project>> GetProjectsAsync()
         {
-            return await _context.Projects.Include(p => p.Parts).ToListAsync();
+            return await _context.Projects.AsNoTracking().Include(p => p.Parts).ThenInclude(m => m.Materials).Include(p => p.Parts) 
+                     .ThenInclude(part => part.ChildParts).ThenInclude(ma => ma.Materials)
+                                           .ToListAsync();
+
         }
 
         public async Task<Project> GetProjectByIdAsync(int id)
         {
-            return await _context.Projects.Include(p => p.Parts)
-                                          .FirstOrDefaultAsync(p => p.ProjectId == id);
+            
+            return await _context.Projects
+        .Include(p => p.Parts)
+            .ThenInclude(part => part.Materials)
+        .Include(p => p.Parts)
+            .ThenInclude(part => part.ChildParts)
+                .ThenInclude(child => child.Materials)
+        .FirstOrDefaultAsync(p => p.ProjectId == id);
         }
 
         public async Task<Project> UpdateProjectAsync(Project project)
@@ -63,5 +72,24 @@ namespace TrueValueHub.Repositories
              await _context.SaveChangesAsync();
              return newPart.Entity;
         }
+
+        public async  Task<List<Project>> GetProjectByName(string name)
+        {
+            
+                try
+                {
+                    return await _context.Projects.Where(p => p.ProjectName.Contains(name)).Include(p => p.Parts).ThenInclude(m => m.Materials).Include(p => p.Parts)
+                    .ThenInclude(part => part.ChildParts).ThenInclude(ma => ma.Materials).ToListAsync();
+                }
+                catch (DbUpdateException dbEx)
+                {
+                    throw new Exception("A database error occurred while retrieving parts.", dbEx);
+                }
+                catch (Exception ex)
+                {
+                    throw new Exception("An unexpected error occurred in the repository while fetching parts.", ex);
+                }
+            }
+        
     }
 }
